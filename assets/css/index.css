@@ -4,7 +4,7 @@
 
 #header-block, #footer-block {
     background-color: rgb(26, 14, 52);
-    height: 1em;
+    height: 10%;
     width: 100%
 }
 
@@ -15,6 +15,8 @@
 
 #wrapper {
     height: 500px;
+    display: flex;
+    flex-direction: column-reverse;
 }
 
 body {
@@ -28,16 +30,72 @@ h2 {
     color: rgb(0, 255, 72);
     -webkit-text-stroke-width: 1px;
     -webkit-text-stroke-color: rgb(0, 106, 255);
+    height: 35%;
+    font-size: 6em;
 }
 
 #colors {
-    width: 50%;
+    /* width: 24%; */
     margin: auto;
-    height: 50%;
+    /* margin-left: auto; */
+    /* margin-right: auto; */
+    height: 30%;
     display: flex;
+    justify-content: space-between;
 }
 
 .color {
     width: 5px;
     height: 100%;
+    margin: 5px;
+    transition: height 0.5s;
+    padding: 1px;
+}
+
+.color:hover {
+    height: 110%;
+    transition: 1s;
+}
+
+.groups {
+    display: flex;
+    margin: 5px;
+}
+
+#circle { 
+    width: 50px;
+    height: 50px;
+    background-color: red;
+    margin: auto;
+    transition: width 1s;
+}
+
+#hidden {
+    display: none;
+}
+
+#circle:hover {
+    width: 50%;
+}
+
+#circle:hover #hidden {
+    width: 50%;
+    margin: auto;
+    display: flex;
+    height: 100%;
+}
+
+input {
+    flex: 1;
+    overflow: hidden;
+    border-style: dashed;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    outline: none;
+}
+
+form {
+    display: flex;
+    width: 100%;
 }

@@ -1,0 +1,64 @@
+div#header-block {
+    height: 50%;
+    background-color: palevioletred;
+    transition: all 0.5s ease-in 0s;
+}
+
+div#wrapper {
+    display: flex;
+    flex-direction: column;
+    height: -webkit-fill-available;
+    padding: 10px;
+    width: 50%;
+    margin: auto;
+}
+
+div#summoner-div {
+    background-color: rgb(26, 14, 52);
+    flex: 2;
+    color: white;
+    position: relative;
+    display: flex;
+}
+
+img#profileIcon {
+    position: absolute;
+    display: block;
+    height: 100%;
+}
+
+div#top10-div {
+    flex: 1;
+    background-color: rgb(26, 14, 52);
+    margin-right: 10px;
+}
+
+div#mostactive-div {
+    background-color: rgb(26, 14, 52);
+    flex: 1;
+    margin-left: 10px;
+}
+
+div#split {
+    flex: 8 0;
+    display: flex;
+}
+
+div.child {
+    margin: 10px;
+}
+
+
+div#decypher-div {
+    background-color: rgb(26, 14, 52);
+    flex: 1;
+}
+
+div.rank-div {
+    position: absolute;
+    right: 0;
+}
+
+body {
+    margin: 0;
+}
