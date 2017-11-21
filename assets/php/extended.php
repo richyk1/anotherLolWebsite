@@ -1,6 +1,6 @@
 <?php
 class STATIK {
-    const API = "RGAPI-9968c039-8800-4fb8-ae3f-de4fb286de81";
+    const API = "RGAPI-6845271e-bfe5-4d8d-a34d-3073f6e99d22";
 
     const SUMMONER_NAME = "/lol/summoner/v3/summoners/by-name/";
     const VERSIONS = "/lol/static-data/v3/versions/";

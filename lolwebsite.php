@@ -19,25 +19,26 @@
             <div id="summoner-div" class="child">
                 <img src="http://ddragon.leagueoflegends.com/cdn/<?php echo getLatestVersion() ?>/img/profileicon/<?php echo $userData['profileIconId'] ?>.png" id="profileIcon">
                 
-                <?php 
-                    $ranks = getRanks();
-                    forEach($ranks as $rank) {
-                       
-                        echo "<div class='rank-div'>";
-                        echo "League: ".$rank['leagueName'];
-                        echo "<br>";
-                        echo "Tier: ".$rank['tier'].$rank['rank'];
-                        echo "<br>";
-                        echo "Queue: ".$rank['queueType'];
-                        echo "<br>";
-                        echo "Wins: ".$rank['wins'];
-                        echo "<br>";
-                        echo "Losses: ".$rank['losses'];
-                        echo "</div>";
-                    }
-                
-                ?>
-                
+                <div id="rank-container">
+                    <?php 
+                        $ranks = getRanks();
+                        forEach($ranks as $rank) {
+                        
+                            echo "<div class='rank-div' id='".$rank['leagueName']."'>";
+                            echo "League: ".$rank['leagueName'];
+                            echo "<br>";
+                            echo "Tier: ".$rank['tier'].$rank['rank'];
+                            echo "<br>";
+                            echo "Queue: ".$rank['queueType'];
+                            echo "<br>";
+                            echo "Wins: ".$rank['wins'];
+                            echo "<br>";
+                            echo "Losses: ".$rank['losses'];
+                            echo "</div>";
+                        }
+                    
+                    ?>
+                </div>
             </div>
             <div id="split" class="child">
                 <div id="top10-div" class="babies"></div>
