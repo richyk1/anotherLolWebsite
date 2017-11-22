@@ -23,16 +23,16 @@
                     $ranks = getRanks();
                     forEach($ranks as $rank) {
                        
-                        echo "<div class='rank-div'>";
-                        echo "League: ".$rank['leagueName'];
-                        echo "<br>";
-                        echo "Tier: ".$rank['tier'].$rank['rank'];
-                        echo "<br>";
-                        echo "Queue: ".$rank['queueType'];
-                        echo "<br>";
-                        echo "Wins: ".$rank['wins'];
-                        echo "<br>";
-                        echo "Losses: ".$rank['losses'];
+                        echo "<div class='rank-div' id='".$rank['queueType']."'>";
+                        echo "<p> League: ".$rank['leagueName']. "</p>";
+                        
+                        echo "<p> Tier: ".$rank['tier'].$rank['rank']."</p>";
+                        
+                        echo "<p> Queue: ".$rank['queueType']."</p>";
+                        
+                        echo "<p> Wins: ".$rank['wins']."</p>";
+                        
+                        echo "<p> Losses: ".$rank['losses']."</p>";
                         echo "</div>";
                     }
                 
@@ -49,5 +49,20 @@
 
 
 </body>
+<link rel="stylesheet" href="assets/css/extended.css">
+<script>
+   
+    $('div[class^=rank-div]').click(function() {
+       // Get the next div[class^=rank-div]
+        var $next = $(this).next('div[class^=rank-div]').css({display: "flex"});
+        // If there wasn't a next one, go back to the first.
+        if( $next.length == 0 ) {
+            $next = $(this).prevAll('div[class^=rank-div]').first();
+        }
+        
+        $(this).hide();
+        $next.show('slow');
+    });
 
+</script>
 </html>

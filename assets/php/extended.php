@@ -1,6 +1,11 @@
 <?php
 class STATIK {
-    const API = "RGAPI-9968c039-8800-4fb8-ae3f-de4fb286de81";
+    const API = "RGAPI-a77cb3e7-f169-4309-9841-bb49bece8c90";
+
+    const MYSQL_CONNECTION = "localhost";
+    const MYSQL_USERNAME = "root";
+    const MYSQL_PASSWORD = "";
+    const MYSQL_DATABASE = "barcode";
 
     const SUMMONER_NAME = "/lol/summoner/v3/summoners/by-name/";
     const VERSIONS = "/lol/static-data/v3/versions/";
@@ -57,7 +62,7 @@ function getLatestVersion() { // Gets the latest game
     
     curl_close($curl);
     if(array_key_exists("status", $result)) {
-        $connection = mysqli_connect("localhost", "root", "", "barcode");
+        $connection = mysqli_connect(STATIK::MYSQL_CONNECTION ,STATIK::MYSQL_USERNAME, STATIK::MYSQL_PASSWORD, STATIK::MYSQL_DATABASE);
         $sql = "SELECT MAX(versions) FROM static_data";
         $result = mysqli_fetch_array(mysqli_query($connection, $sql));
 
@@ -98,10 +103,7 @@ function getRanks() {
 }
 
 function mysqlConnection($data) {
-    $servername = "localhost";
-    $username = "root";
-
-    $conn = mysqli_connect($servername, $username, "", "barcode");
+    $conn = mysqli_connect(STATIK::MYSQL_CONNECTION ,STATIK::MYSQL_USERNAME, STATIK::MYSQL_PASSWORD, STATIK::MYSQL_DATABASE);
     if(!$conn) {
         echo "could not connect to server" .mysql_error();
     }
