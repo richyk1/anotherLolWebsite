@@ -14,15 +14,53 @@ div#RANKED_FLEX_SR {
 }
 
 div.rank-div {
-    position: absolute;
-    right: 0;
     height: 100%;
     line-height: 100%;
     text-align: center;
     outline: white dotted;
+    flex: 1;
+}
+
+div#most-played {
+    flex: 2;
 }
 
 p {
     flex: 1;
     margin: 0;
+}
+#img-wrap {
+    position: relative;
+    display: flex;
+}
+
+#img-desc {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(5, 9, 12, 0.72);
+  color: #fff;
+  visibility: hidden;
+  opacity: 0;
+
+  /* transition effect. not necessary */
+  transition: opacity .2s, visibility .2s;
+  width: 120px;
+
+
+ 
+
+
+}
+
+#img-wrap:hover #img-desc {
+  visibility: visible;
+  opacity: 1;
+
+  height: 120px;
+  line-height: 90px;
+  text-align: center;
+  border: 2px dashed #f69c55;
 }

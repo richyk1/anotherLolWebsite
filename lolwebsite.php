@@ -17,27 +17,33 @@
       ?>
         <div id="wrapper">
             <div id="summoner-div" class="child">
-                <img src="http://ddragon.leagueoflegends.com/cdn/<?php echo getLatestVersion() ?>/img/profileicon/<?php echo $userData['profileIconId'] ?>.png" id="profileIcon">
+                <img src="http://ddragon.leagueoflegends.com/cdn/<?php echo getLatestVersion() ?>/img/profileicon/<?php echo $userData['profileIconId']; ?>.png" id="profileIcon">
                 
-                <?php 
-                    $ranks = getRanks();
-                    forEach($ranks as $rank) {
-                       
-                        echo "<div class='rank-div' id='".$rank['queueType']."'>";
-                        echo "<p> League: ".$rank['leagueName']. "</p>";
-                        
-                        echo "<p> Tier: ".$rank['tier'].$rank['rank']."</p>";
-                        
-                        echo "<p> Queue: ".$rank['queueType']."</p>";
-                        
-                        echo "<p> Wins: ".$rank['wins']."</p>";
-                        
-                        echo "<p> Losses: ".$rank['losses']."</p>";
-                        echo "</div>";
-                    }
-                
-                ?>
-                
+                <div id="summoner-div-child">
+                <div id="most-played">
+                    <div id="img-wrap">
+                        <img src="http://ddragon.leagueoflegends.com/cdn/<?php echo getLatestVersion() ?>/img/champion/<?php echo getChampionMastery()['championName'] ?>.png" id="img-champion">
+                        <p id="img-desc"><?php  print_r(getChampionMastery()['championPoints'])?></p>
+                    </div>
+                </div>        
+                    <?php 
+                        $ranks = getRanks();
+                        forEach($ranks as $rank) {
+                            echo "<div class='rank-div' id='".$rank['queueType']."'>";
+                            echo "<p> League: ".$rank['leagueName']. "</p>";
+                            
+                            echo "<p> Tier: ".$rank['tier'].$rank['rank']."</p>";
+                            
+                            echo "<p> Queue: ".$rank['queueType']."</p>";
+                            
+                            echo "<p> Wins: ".$rank['wins']."</p>";
+                            
+                            echo "<p> Losses: ".$rank['losses']."</p>";
+                            echo "</div>";
+                        }
+                    
+                    ?>
+                </div>
             </div>
             <div id="split" class="child">
                 <div id="top10-div" class="babies"></div>
@@ -60,7 +66,7 @@
             $next = $(this).prevAll('div[class^=rank-div]').first();
         }
         
-        $(this).hide();
+        $(this).hide('slow');
         $next.show('slow');
     });
 
