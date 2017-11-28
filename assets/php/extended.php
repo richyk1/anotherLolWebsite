@@ -1,7 +1,7 @@
 <?php
 
 class STATIK {
-    const API = "RGAPI-ac3b7c1d-51a1-4f07-9989-427d43080ca8";
+    const API = "RGAPI-9b23932a-3ca9-4678-9d5b-407671aa1d43";
 
     const MYSQL_CONNECTION = "localhost";
     const MYSQL_USERNAME = "root";

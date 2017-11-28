@@ -17,15 +17,33 @@
       ?>
         <div id="wrapper">
             <div id="summoner-div" class="child">
-                <img src="http://ddragon.leagueoflegends.com/cdn/<?php echo getLatestVersion() ?>/img/profileicon/<?php echo $userData['profileIconId']; ?>.png" id="profileIcon">
-                
+                <img src="http://ddragon.leagueoflegends.com/cdn/<?php echo getLatestVersion() ?>/img/profileicon/<?php echo $userData['profileIconId']; ?>.png"
+                    id="profileIcon">
+
                 <div id="summoner-div-child">
-                <div id="most-played">
-                    <div id="img-wrap">
-                        <img src="http://ddragon.leagueoflegends.com/cdn/<?php echo getLatestVersion() ?>/img/champion/<?php echo getChampionMastery()['championName'] ?>.png" id="img-champion">
-                        <p id="img-desc"><?php  print_r(getChampionMastery()['championPoints'])?></p>
+                    <div id="flex-main">
+                        <div id="flex-one">
+
+                                <div id="img-wrap">
+                                    <img src="http://ddragon.leagueoflegends.com/cdn/<?php echo getLatestVersion() ?>/img/champion/<?php echo getChampionMastery()['championName'] ?>.png"
+                                        id="img-champion">
+                                    <p id="img-desc">
+                                        <?php  print_r(getChampionMastery()['championPoints'])?>
+                                    </p>
+                                </div>
+
+                            <div id="match-history">
+
+                            </div>
+                        </div>
+                        <div id="flex-two">
+                            <div id="more-info">
+
+                            </div>
+                        </div>
                     </div>
-                </div>        
+                    
+
                     <?php 
                         $ranks = getRanks();
                         forEach($ranks as $rank) {
@@ -57,18 +75,23 @@
 </body>
 <link rel="stylesheet" href="assets/css/extended.css">
 <script>
-   
-    $('div[class^=rank-div]').click(function() {
-       // Get the next div[class^=rank-div]
-        var $next = $(this).next('div[class^=rank-div]').css({display: "flex"});
+    $('div[class^=rank-div]').click(function () {
+        // Get the next div[class^=rank-div]
+        $(this).css({
+            display: "none"
+        })
+        var $next = $(this).next('div[class^=rank-div]').css({
+            display: "flex"
+        });
         // If there wasn't a next one, go back to the first.
-        if( $next.length == 0 ) {
+        if ($next.length == 0) {
             $next = $(this).prevAll('div[class^=rank-div]').first();
+            
         }
-        
+
         $(this).hide('slow');
         $next.show('slow');
     });
-
 </script>
+
 </html>

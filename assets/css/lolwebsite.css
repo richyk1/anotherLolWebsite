@@ -6,7 +6,6 @@ body {
     margin: 0;
 }
 
-
 div#header-block {
     height: 50%;
     background-color: palevioletred;
@@ -21,8 +20,6 @@ div#wrapper {
     width: 50%;
     margin: auto;
 }
-
-
 
 div#top10-div {
     flex: 1;
@@ -55,10 +52,10 @@ div.rank-div {
     /* right: 0; */
 }
 
-
 div#summoner-div-child {
     display: flex;
     flex: 1;
+    flex-wrap: wrap
 }
 
 div#summoner-div {
