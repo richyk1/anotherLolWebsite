@@ -66,20 +66,15 @@ div#match-history {
     height: 120px;
 }
 
-div#more-info {
-    flex: 0 1 auto;
-    /* height: 10px; */
-    /* width: 100px; */
+button#more-info {
+    flex: 1;
+    background: khaki
 }
 
 div#flex-one {
     height: 120px;
     flex-direction: row;
     display: flex;
-}
-
-div#flex-two {
-    flex: 1;
 }
 
 div#flex-main {

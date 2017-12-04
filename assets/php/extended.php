@@ -1,7 +1,9 @@
 <?php
 
 class STATIK {
-    const API = "RGAPI-9b23932a-3ca9-4678-9d5b-407671aa1d43";
+    const API = "RGAPI-c07e37f5-779a-4de4-a5c4-426fee404a35";
+    
+    
 
     const MYSQL_CONNECTION = "localhost";
     const MYSQL_USERNAME = "root";
@@ -13,6 +15,8 @@ class STATIK {
     const RANKS = "/lol/league/v3/positions/by-summoner/"; // REQUIRES SUMMONERID
     const MASTERY_POINTS = "/lol/champion-mastery/v3/champion-masteries/by-summoner/"; // REQUIRES SUMMONERID
     const ALL_CHAMPIONS = "/lol/static-data/v3/champions";
+    const RECENT_GAMES = "/lol/match/v3/matchlists/by-account/{accountId}/recent";
+    const MATCH = "/lol/match/v3/matches/{matchId}";
 }
 
 class MYSQL_HANDLER {
@@ -60,6 +64,37 @@ class MYSQL_HANDLER {
         mysqli_close($conn);
         }
 
+    public static function GET_Ranks($userData) {
+        $conn = mysqli_connect(STATIK::MYSQL_CONNECTION, STATIK::MYSQL_USERNAME, STATIK::MYSQL_PASSWORD, STATIK::MYSQL_DATABASE);
+        $sql = mysqli_query($conn, "SELECT rank FROM users WHERE summonerID = '".$userData['id']."'");
+
+        return $sql;
+        
+    }
+
+    public static function CACHE_RANKS($ranks, $userData) {
+        $conn = mysqli_connect(STATIK::MYSQL_CONNECTION, STATIK::MYSQL_USERNAME, STATIK::MYSQL_PASSWORD, STATIK::MYSQL_DATABASE);
+        mysqli_query($conn, "UPDATE users SET rank = '".serialize($ranks)."' WHERE summonerID = '".$userData['id']."'");
+
+    }
+
+    public static function GET_MATCHES($userData) {
+        $conn = mysqli_connect(STATIK::MYSQL_CONNECTION, STATIK::MYSQL_USERNAME, STATIK::MYSQL_PASSWORD, STATIK::MYSQL_DATABASE);
+        $sql = mysqli_query($conn, "SELECT recentGames FROM users WHERE summonerID = '".$userData['id']."'");
+
+        return $sql;
+        
+    }
+
+    public static function CACHE_MATCHES($matches, $userData) {
+        $conn = mysqli_connect(STATIK::MYSQL_CONNECTION, STATIK::MYSQL_USERNAME, STATIK::MYSQL_PASSWORD, STATIK::MYSQL_DATABASE);
+        mysqli_query($conn, "UPDATE users SET recentGames = '".serialize($matches)."' WHERE summonerID = '".$userData['id']."'");
+
+    }
+
+
+
+
         
     }
     
@@ -97,10 +132,23 @@ $options = array(
 
 curl_setopt_array($curl, $options); 
 $result = json_decode(curl_exec($curl), true); // Converting to array. Second arguemnt true makes it so instead convertying to object it converts to array.
+if(isset($result['status'])) {
+if($result['status']['status_code'] == 404) { // Error handling in case the champion name was not found.
+    echo "<div id='error'>";
+    echo $result['status']['message']." ";
+    echo $result['status']['status_code'];
+    echo "</div>";
+    exit();
+}
+
+}
+
 forEach($result as $key => $value) {
     $userData[$key] = $value;
 }
 curl_close($curl); 
+
+
 
 function getLatestVersion() { // Gets the latest game
      $curl = curl_init();
@@ -129,6 +177,7 @@ function getLatestVersion() { // Gets the latest game
 }
 
 function getRanks() {
+    sleep(2);
     $curl = curl_init();
 
     $userData = $GLOBALS["userData"];
@@ -141,7 +190,11 @@ function getRanks() {
 
     curl_setopt_array($curl, $options);
     $result = json_decode(curl_exec($curl), true);
-
+    if(isset($result['status'])) {
+        if($result['status']['status_code'] == 429) $result = MYSQL_HANDLER::GET_RANKS($userData); 
+    } else {
+        MYSQL_HANDLER::CACHE_RANKS($result, $userData);
+    }
     
     forEach($result as $key => $value) {
         unset($result[$key]['leagueId']);
@@ -193,19 +246,25 @@ function getChampionMastery() {
 
     $result = json_decode(curl_exec($curl), true);
     curl_close($curl);
+    if(isset($result[0])) {
+        $mostPlayedChamp = $result[0];
+        $mostPlayedChamp['championId'] = getChampionName($mostPlayedChamp['championId']);
+        return array(
+            "championPoints" => $mostPlayedChamp['championPoints'],
+            "championName" => $mostPlayedChamp['championId']
+        );
+    } else {
+        return "null";
+    }
+    
 
-    $mostPlayedChamp = $result[0];
 
+    
 
-    $mostPlayedChamp['championId'] = getChampionName($mostPlayedChamp['championId']);
-
-    return array(
-        "championPoints" => $mostPlayedChamp['championPoints'],
-        "championName" => $mostPlayedChamp['championId']
-    );
+    
 }
 
- function getChampionName($championId) {
+function getChampionName($championId) {
     $parameters = http_build_query([
         "?".'api_key' => STATIK::API,
         "dataById" => "true"
@@ -231,8 +290,68 @@ function getChampionMastery() {
         return MYSQL_HANDLER::getChampionNameSQL($championId);
      };
 
- }
+}
 
+function getRecentGames($accountId) {
+    $curl = curl_init();
+    $userData = $GLOBALS['userData'];
+
+    $options = array(
+        CURLOPT_RETURNTRANSFER => 1,
+        CURLOPT_URL => $GLOBALS['prefix'].str_replace("{accountId}", $accountId, STATIK::RECENT_GAMES).$GLOBALS['parameters']
+    );
+
+    curl_setopt_array($curl, $options);
+    $result = json_decode(curl_exec($curl), true);
+    curl_close($curl);
+
+    $games = array();
+    foreach($result['matches'] as $match) {
+        array_push($games, $GLOBALS['prefix'].str_replace("{matchId}", $match['gameId'], STATIK::MATCH).$GLOBALS['parameters']);
+    }
+
+    $ch = array();
+    $mh = curl_multi_init();
+
+    foreach ($games as $key => $value) {
+        $ch[$key] = curl_init();
+        if ($options) {
+            curl_setopt_array($ch[$key], $options);
+        }
+        curl_setopt($ch[$key], CURLOPT_URL, $value);
+        curl_setopt($ch[$key], CURLOPT_RETURNTRANSFER, true);
+        curl_multi_add_handle($mh, $ch[$key]);
+    }
+
+    $game_result_array = array();
+    $running = null;
+    do {
+        curl_multi_exec($mh, $running); //add handle
+ 
+       
+    } while ($running > 0);
+    // Get content and remove handles.
+    foreach ($ch as $key => $val) {
+        $result_two = json_decode(curl_multi_getcontent($val), true);
+        // if(isset($result_two['status']['status_code'])) if($result_two['status']['status_code'] == 429) {
+        //     $result_two = MYSQL_HANDLER::GET_MATCHES($userData);
+        // } else {
+        //     MYSQL_HANDLER::CACHE_MATCHES($result_two, $userData);
+        // }
+
+        $participantId;
+        foreach($result_two['participantIdentities'] as $count => $identity) {
+            if($identity['player']['accountId'] == $accountId) $participantId = $identity['participantId'];        
+        }
+        foreach($result_two['participants'] as $count => $participant) {
+            if($participant['participantId'] == $participantId) array_push($game_result_array, $participant['stats']['win']);
+        }
+
+        curl_multi_remove_handle($mh, $val);
+    }
+    curl_multi_close($mh);
+    return $game_result_array;
+}
 
 
 ?>

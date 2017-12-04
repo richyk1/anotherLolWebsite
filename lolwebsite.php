@@ -25,7 +25,7 @@
                         <div id="flex-one">
 
                                 <div id="img-wrap">
-                                    <img src="http://ddragon.leagueoflegends.com/cdn/<?php echo getLatestVersion() ?>/img/champion/<?php echo getChampionMastery()['championName'] ?>.png"
+                                    <img src="http://ddragon.leagueoflegends.com/cdn/<?php echo getLatestVersion() ?>/img/champion/<?php if(isset(getChampionMastery()['championName'])) echo getChampionMastery()['championName'] ?>.png"
                                         id="img-champion">
                                     <p id="img-desc">
                                         <?php  print_r(getChampionMastery()['championPoints'])?>
@@ -33,18 +33,15 @@
                                 </div>
 
                             <div id="match-history">
-
+                                <?php var_dump(getRecentGames($userData['accountId'])); ?>
                             </div>
                         </div>
-                        <div id="flex-two">
-                            <div id="more-info">
-
-                            </div>
-                        </div>
+                    
+                            <button id="more-info" type="button"></button>     
                     </div>
                     
 
-                    <?php 
+                    <?php
                         $ranks = getRanks();
                         forEach($ranks as $rank) {
                             echo "<div class='rank-div' id='".$rank['queueType']."'>";
@@ -85,7 +82,10 @@
         });
         // If there wasn't a next one, go back to the first.
         if ($next.length == 0) {
-            $next = $(this).prevAll('div[class^=rank-div]').first();
+            $next = $(this).prevAll('div[class^=rank-div]').first().css({
+            display: "flex"
+        });
+            
             
         }
 
