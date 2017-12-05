@@ -33,7 +33,11 @@
                                 </div>
 
                             <div id="match-history">
-                                <?php var_dump(getRecentGames($userData['accountId'])); ?>
+                                <?php
+                                    foreach(getRecentGames($userData['accountId']) as $count => $item) {
+                                        echo "<div>".$item ? 'true' : 'false'."</div>"."<br>";
+                                    }
+                                ?>
                             </div>
                         </div>
                     

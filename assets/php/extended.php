@@ -1,7 +1,7 @@
 <?php
 
 class STATIK {
-    const API = "RGAPI-c07e37f5-779a-4de4-a5c4-426fee404a35";
+    const API = "RGAPI-b4116126-fb4a-4d6a-bbba-360fdc3936b6";
     
     
 
@@ -74,7 +74,8 @@ class MYSQL_HANDLER {
 
     public static function CACHE_RANKS($ranks, $userData) {
         $conn = mysqli_connect(STATIK::MYSQL_CONNECTION, STATIK::MYSQL_USERNAME, STATIK::MYSQL_PASSWORD, STATIK::MYSQL_DATABASE);
-        mysqli_query($conn, "UPDATE users SET rank = '".serialize($ranks)."' WHERE summonerID = '".$userData['id']."'");
+        $escaped = mysqli_real_escape_string($conn, serialize($ranks));
+        mysqli_query($conn, "UPDATE users SET rank = '".$escaped."' WHERE summonerID = '".$userData['id']."'");
 
     }
 
@@ -88,7 +89,8 @@ class MYSQL_HANDLER {
 
     public static function CACHE_MATCHES($matches, $userData) {
         $conn = mysqli_connect(STATIK::MYSQL_CONNECTION, STATIK::MYSQL_USERNAME, STATIK::MYSQL_PASSWORD, STATIK::MYSQL_DATABASE);
-        mysqli_query($conn, "UPDATE users SET recentGames = '".serialize($matches)."' WHERE summonerID = '".$userData['id']."'");
+        $escaped = mysqli_real_escape_string($conn, serialize($matches));
+        mysqli_query($conn, "UPDATE users SET recentGames = '".$escaped."' WHERE summonerID = '".$userData['id']."'");
 
     }
 
@@ -333,11 +335,13 @@ function getRecentGames($accountId) {
     // Get content and remove handles.
     foreach ($ch as $key => $val) {
         $result_two = json_decode(curl_multi_getcontent($val), true);
-        // if(isset($result_two['status']['status_code'])) if($result_two['status']['status_code'] == 429) {
-        //     $result_two = MYSQL_HANDLER::GET_MATCHES($userData);
-        // } else {
-        //     MYSQL_HANDLER::CACHE_MATCHES($result_two, $userData);
-        // }
+        if(isset($result_two['status']['status_code'])) if($result_two['status']['status_code'] == 429) {
+            // $result_two = MYSQL_HANDLER::GET_MATCHES($userData);
+            continue;
+        } 
+        if(!isset($result_two['status'])) {
+            MYSQL_HANDLER::CACHE_MATCHES($result_two, $userData);
+        }
 
         $participantId;
         foreach($result_two['participantIdentities'] as $count => $identity) {
